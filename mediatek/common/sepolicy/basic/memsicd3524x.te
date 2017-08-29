@@ -1,0 +1,30 @@
+# ==============================================
+# Policy File of /system/binmemsicd3524x Executable File 
+
+
+# ==============================================
+# Type Declaration
+# ==============================================
+
+type memsicd3524x_exec , exec_type, file_type;
+type memsicd3524x ,domain;
+
+# ==============================================
+# MTK Policy Rule
+# ==============================================
+
+init_daemon_domain(memsicd3524x)
+#unconfined_domain(memsicd3524x)
+# Purpose : M-sensor daemon for access driver node
+allow memsicd3524x msensor_device:chr_file { open ioctl read write };
+allow memsicd3524x gsensor_device:chr_file { open ioctl read write };
+allow memsicd3524x input_device:dir { search open read write };
+allow memsicd3524x input_device:file { open read };
+allow memsicd3524x memsicd3524x_access_file1:file { open read write };
+allow memsicd3524x memsicd3524x_access_file2:file { open read write};
+# Operate data partation directly, need modify later,e.g. use "data/misc/sensor".
+# for msensor daemon access "data/misc".
+file_type_auto_trans(memsicd3524x, system_data_file, msensor_data_file)
+allow memsicd3524x system_data_file:dir { create setattr };
+allow memsicd3524x msensor_data_file:file { open write read create setattr};
+

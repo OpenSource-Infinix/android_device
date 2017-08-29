@@ -1,0 +1,5 @@
+#For Goodix fingerprint,add by zhuyiqun
+/dev/goodix_fp*     u:object_r:gx_fpd_device:s0
+/data/system/fingerprint(/.*)?  u:object_r:gx_fpd_data_file:s0
+/persist/data/gxfp(/.*)?    u:object_r:gx_fpd_data_file:s0
+/system/bin/gx_fpd  u:object_r:gx_fpd_exec:s0

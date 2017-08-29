@@ -1,0 +1,7 @@
+allow fingerprintd gx_fpd_device:chr_file r_file_perms;
+allow fingerprintd fingerprint_service:service_manager find;
+allow fingerprintd property_socket:sock_file write;
+allow fingerprintd init:unix_stream_socket connectto;
+allow fingerprintd gxfpd_fingerprint_prop:property_service set;
+allow fingerprintd rlk_fingerprint_prop:property_service {set};
+allow fingerprintd rlk_fingerprint_prop:file r_file_perms;

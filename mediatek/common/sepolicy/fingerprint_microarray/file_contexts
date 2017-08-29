@@ -1,0 +1,3 @@
+#add by guq@microarray.com.cn	
+/dev/madev0		u:object_r:microarray_finger_device:s0
+/data/system/ma_fingerprint/*   u:object_r:ma_data_file:s0

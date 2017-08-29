@@ -1,0 +1,108 @@
+type gx_fpd, domain;
+
+type gx_fpd_exec, exec_type, file_type;
+typeattribute gx_fpd mlstrustedsubject;
+
+# gx_fpd
+init_daemon_domain(gx_fpd)
+binder_use(gx_fpd)
+binder_call(gx_fpd, binderservicedomain)
+binder_call(gx_fpd, appdomain)
+binder_service(gx_fpd)
+
+file_type_auto_trans(gx_fpd, system_data_file, gx_fpd_data_file);
+allow gx_fpd_data_file labeledfs:filesystem associate;
+
+# callback to fingerprintd with binder
+binder_call(gx_fpd, fingerprintd);
+allow gx_fpd fingerprintd_service:service_manager find;
+
+binder_call(fingerprintd, gx_fpd);
+allow fingerprintd gx_fpd_service:service_manager find;
+allow fingerprintd gx_fpd_lib_file:file r_file_perms;
+allow fingerprintd gx_fpd_lib_file:file { getattr read  };
+allow fingerprintd gx_fpd_lib_file:chr_file { r_file_perms setattr };
+allow fingerprintd gx_fpd_device:chr_file {read write setattr open};
+
+# add self
+allow gx_fpd gx_fpd_service:service_manager { add find };
+allow gx_fpd self:process execmem;
+allow gx_fpd self:capability { dac_override dac_read_search fsetid };
+allow gx_fpd kernel:system module_request;
+
+# allow TEE
+allow gx_fpd tee_device:chr_file { open read ioctl write };
+
+# allow gx_fpd_device
+allow gx_fpd gx_fpd_device:file { create_file_perms };
+allow gx_fpd gx_fpd_device:chr_file { rw_file_perms setattr };
+allow gx_fpd gx_fpd_device:chr_file { getattr open read ioctl lock append write };
+allow init gx_fpd_device:chr_file { rw_file_perms };
+
+# allow fingerprintd_data_file
+allow gx_fpd fingerprintd_data_file:file { create_file_perms };
+allow gx_fpd fingerprintd_data_file:chr_file { rw_file_perms setattr };
+r_dir_file(gx_fpd, fingerprintd_data_file)
+allow gx_fpd fingerprintd_data_file:dir ra_dir_perms;
+allow gx_fpd fingerprintd_data_file:dir { create setattr };
+
+# allow gx_fpd_data_file
+allow gx_fpd gx_fpd_data_file:file { create_file_perms };
+allow gx_fpd gx_fpd_data_file:chr_file { rw_file_perms setattr };
+r_dir_file(gx_fpd, gx_fpd_data_file)
+allow gx_fpd gx_fpd_data_file:dir ra_dir_perms;
+allow gx_fpd gx_fpd_data_file:dir create_dir_perms;
+
+# allow gx_fpd_lib_file
+allow gx_fpd gx_fpd_lib_file:file { create_file_perms getattr read  };
+allow gx_fpd gx_fpd_lib_file:chr_file { rw_file_perms setattr };
+allow gx_fpd gx_fpd_lib_file:dir ra_dir_perms;
+
+# allow system_file
+allow gx_fpd system_file:file {rx_file_perms };
+
+# Need to add auth tokens to KeyStore
+use_keystore(gx_fpd)
+allow gx_fpd keystore:keystore_key { add_auth };
+
+# For permissions checking
+binder_call(gx_fpd, system_server);
+allow gx_fpd permission_service:service_manager find;
+
+# allow SD-Card
+allow gx_fpd fuse:dir create_dir_perms;
+allow gx_fpd fuse:file create_file_perms;
+r_dir_file(gx_fpd, sdcard_type)
+allow gx_fpd sdcard_type:file write;
+allow gx_fpd app_data_file:dir search;
+allow gx_fpd app_data_file:file rw_file_perms;
+# TODO:
+allow gx_fpd gx_fpd_data_file:dir create_dir_perms;
+allow gx_fpd gx_fpd_data_file:file create_file_perms;
+allow gx_fpd apk_data_file:dir create_dir_perms;
+allow gx_fpd apk_data_file:file {create_file_perms }; 
+
+allow gx_fpd self:netlink_socket create_socket_perms;
+allow gx_fpd power_service:service_manager find;
+#allow appdomain
+#allow appdomain gx_fpd_lib_file:file rx_file_perms;
+
+allow gx_fpd storage_file:lnk_file read;
+allow gx_fpd property_socket:sock_file write;
+allow gx_fpd tmpfs:dir search;
+allow gx_fpd init:unix_stream_socket connectto;
+allow gx_fpd mnt_user_file:dir search;
+allow gx_fpd system_prop:property_service set;
+allow gx_fpd rootfs:lnk_file getattr;
+
+allow gx_fpd property_socket:sock_file {write};
+allow gx_fpd init:unix_stream_socket {connectto};
+allow gx_fpd gxfpd_fingerprint_prop:file r_file_perms;
+allow gx_fpd gxfpd_fingerprint_prop:file read;
+
+allow fingerprintd rlk_fingerprint_prop:property_service {set};
+allow fingerprintd rlk_fingerprint_prop:file { read open getattr};
+allow gx_fpd rlk_fingerprint_prop:file {read open getattr};
+allow system_server rlk_fingerprint_prop:file r_file_perms;
+allow audioserver rlk_fingerprint_prop:file r_file_perms;
+

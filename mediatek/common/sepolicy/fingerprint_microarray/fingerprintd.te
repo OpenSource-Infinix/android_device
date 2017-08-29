@@ -1,0 +1,14 @@
+
+#add by guq@microarray.com.cn
+allow fingerprintd microarray_finger_device:chr_file {create_file_perms};
+allow fingerprintd self:capability {dac_override dac_read_search};
+#allow fingerprintd system_data_file:dir {open write read add_name remove_name};
+#allow fingerprintd system_data_file:file {create write open lock setattr unlink};
+
+allow ma_data_file labeledfs:filesystem associate; 
+file_type_auto_trans(fingerprintd, system_data_file, ma_data_file);
+allow fingerprintd ma_data_file:file create_file_perms;
+#add by microarray end
+
+
+

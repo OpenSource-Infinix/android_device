@@ -1,0 +1,6 @@
+
+#add by microarray start
+allow init ma_data_file:dir {create_file_perms};
+allow init ma_data_file:file {create_file_perms};
+#add by microarray end
+

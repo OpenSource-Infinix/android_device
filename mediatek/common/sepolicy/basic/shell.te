@@ -1,0 +1,4 @@
+#add for mag
+allow shell memsicd3524x_exec:file rx_file_perms;
+allow shell sysfs_backlight_file:file {getattr read  write open};
+#add end

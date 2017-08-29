@@ -1,0 +1,4 @@
+
+# add by microarray start
+type ma_data_file, file_type, data_file_type;
+# add by microarray end

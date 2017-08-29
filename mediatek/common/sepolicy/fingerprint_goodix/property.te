@@ -1,0 +1,2 @@
+type gxfpd_fingerprint_prop, property_type;
+type rlk_fingerprint_prop, property_type;
